@@ -19,8 +19,7 @@ public class TCPReader implements Runnable {
 	private InputReader reader;
 	private DataOutputStream out;
 
-	private String name;
-	private Socket sock;
+	private Client client;
 
 	private MessageBuffer buffer;
 	
@@ -30,8 +29,7 @@ public class TCPReader implements Runnable {
 	 */
 	public TCPReader(int number, Socket sock, MessageBuffer buffer) throws IOException {
 		reader = new InputReader(sock.getInputStream());
-		this.sock = sock;
-		name = "client" + number;
+		client = new Client(sock, "name" + number);
 		out = new DataOutputStream(sock.getOutputStream());
 		this.buffer = buffer;
 	}
@@ -44,16 +42,16 @@ public class TCPReader implements Runnable {
 		try {
 			while(true) {
 				try {
-					Message m = Message.fromReader(reader, name);
+					Message m = Message.fromReader(reader, client);
 					reader.readCommand();
 					switch(reader.getCommandId()) {
 					case NEWCLIENT :
-						out.writeChars("connection_ack " + name);
+						out.writeChars("connection_ack " + client.getName());
 						break;
 						
 					case ENDOFCLIENT:
 						buffer.put(m);
-						sock.close();
+						client.getSocket().close();
 						return;
 						
 						default: 
@@ -64,7 +62,7 @@ public class TCPReader implements Runnable {
 				}
 			}
 		} catch (IOException e) {
-			System.err.println("Error while reading from " + name + ": " + e.getLocalizedMessage());
+			System.err.println("Error while reading from " + client.getName()  + ": " + e.getLocalizedMessage());
 		}
 	}
 }

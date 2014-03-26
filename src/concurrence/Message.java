@@ -4,23 +4,23 @@ import lsr.concurrence.provided.server.CommandID;
 import lsr.concurrence.provided.server.InputReader;
 
 public class Message {
-	private String from;
+	private Client from;
 	private CommandID cmdid;
 	private String topic;
 	private String message;
 	
-	public Message(CommandID cmdid, String from, String topic, String message) {
+	public Message(CommandID cmdid, Client from, String topic, String message) {
 		this.from = from;
 		this.cmdid = cmdid;
 		this.topic = topic;
 		this.message = message;
 	}
 	
-	public static Message fromReader(InputReader reader, String name) {
-		return new Message(reader.getCommandId(), name, reader.getTopic(), reader.getMessage());
+	public static Message fromReader(InputReader reader, Client client) {
+		return new Message(reader.getCommandId(), client, reader.getTopic(), reader.getMessage());
 	}
 	
-	public String getFrom() {
+	public Client  getClient() {
 		return from;
 	}
 
