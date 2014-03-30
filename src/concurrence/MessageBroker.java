@@ -86,6 +86,9 @@ public class MessageBroker implements Runnable {
 			case PUBLISH:
 				sendMessage(m.getTopic(), m.getMessage());
 				break;
+			
+			default:
+				// this should not happens
 			}
 		}
 	}
