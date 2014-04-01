@@ -3,7 +3,6 @@ package concurrence;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -20,9 +19,6 @@ public class TCPAcceptor implements Runnable {
 	private ExecutorService tPool;
 	
 	private MessageBuffer buffer = new MessageBuffer();
-	
-	// private ArrayList<TCPReader> clients = new ArrayList<>();
-	// TODO sauf erreur pas besoin de garder une listes des clients dans le "welcoming thread"
 	
 	private TCPAcceptor() {
 		try {
@@ -46,15 +42,11 @@ public class TCPAcceptor implements Runnable {
 	 */
 	public void run() {
 		Socket client;
-		// TCPReader chandler;   c.f l.15
-		//Thread tclient;
 		int cid = 0;
 		
 		try {
 			while(true) {
 				client = socket.accept();
-				// chandler = new TCPReader(cid++, client, buffer);
-				// clients.add(chandler); c.f. l.15
 				tPool.execute(new TCPReader(cid++, client, buffer));
 			}			
 		} catch(IOException e) {
