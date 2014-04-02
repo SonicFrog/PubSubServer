@@ -1,5 +1,7 @@
 package concurrence;
 
+import java.io.IOException;
+
 import lsr.concurrence.provided.server.CommandID;
 import lsr.concurrence.provided.server.InputReader;
 
@@ -16,7 +18,7 @@ public class Message {
 		this.message = message;
 	}
 	
-	public static Message fromReader(InputReader reader, Client client) {
+	public static Message fromReader(InputReader reader, Client client) throws IOException {
 		return new Message(reader.getCommandId(), client, reader.getTopic(), reader.getMessage());
 	}
 	
