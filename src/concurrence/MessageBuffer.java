@@ -1,7 +1,7 @@
 package concurrence;
 
 /**
- * Concurrent message buffer
+ * Concurrent message buffer yay
  * 
  * @author ars3nic
  *
@@ -25,11 +25,13 @@ public class MessageBuffer {
 	public synchronized void put(Message m) {
 		try {
 			while (counter == BUF_SIZE) {
+				System.err.println(getClass().getName() + ": Buffer is full");
 				wait();
 			}
 			buf[input] = m;
 			counter++;
 			input = (input + 1) % BUF_SIZE;
+			System.err.println(getClass().getName() + ": Added message to buffer");
 			notifyAll();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -44,11 +46,13 @@ public class MessageBuffer {
 	public synchronized Message get() {
 		try {
 			while(counter == 0) {
+				System.err.println(getClass().getName() + ": No message to get in buffer! Waiting...");
 				wait();
 			}
 			Message m = buf[output];
 			output = (output +  1) % BUF_SIZE;
 			counter--;
+			System.err.println(getClass().getName() + ": Got a message from buffer");
 			notifyAll();
 			return m;
 		} catch (InterruptedException e) {
