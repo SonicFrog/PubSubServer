@@ -9,7 +9,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * Concurrently manages the list of subscribers for each subject and allows 
  * for concurrent publishing in different subjects
  * 
- * @see FagLord
+ * @see Client
  * @version 6.66 (the number of the beast)
  * @author ars3nic
  *

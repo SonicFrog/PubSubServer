@@ -48,7 +48,7 @@ public class TCPReader implements Runnable {
 
 				case ENDOFCLIENT:
 					buffer.put(m);
-					client.getSocket().close();
+					client.close();
 					return;
 
 				default: 
@@ -59,6 +59,7 @@ public class TCPReader implements Runnable {
 				System.err.println("InputFormatException skipping!");
 			} catch (IOException e) {
 				System.err.println("Error while reading from " + client.getName()  + ": " + e.getLocalizedMessage());
+				return;
 			}
 			
 		}

@@ -3,6 +3,7 @@ package concurrence;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.nio.charset.Charset;
 
 public class Client implements Comparable<Client> {
 
@@ -12,10 +13,6 @@ public class Client implements Comparable<Client> {
 	public Client(Socket sock, String name) {
 		this.sock = sock;
 		this.name = name;
-	}
-
-	public Socket getSocket() {
-		return sock;
 	}
 
 	public String getName() {
@@ -30,9 +27,8 @@ public class Client implements Comparable<Client> {
 	public synchronized void sendMessage(String topic, String message) {
 		try {
 			System.err.println(getClass().getName() + ": Sending message to " + getName() );
-			DataOutputStream out = new DataOutputStream(sock.getOutputStream());
-			out.writeChars(topic + " " + message + "\n" );
-			out.flush();
+			byte[] b = (topic + " " + message + "\n" ).getBytes(Charset.forName("UTF-8"));
+			sock.getOutputStream().write(b);
 		} catch (IOException e) {
 			System.err.println("Client " + name + " failed to receive a message");
 		}
@@ -41,13 +37,15 @@ public class Client implements Comparable<Client> {
 	public synchronized void sendACK(String ack_type, String data) {
 		try {
 			System.err.println(getClass().getName() + ": Sending ACK to " + getName() );
-			DataOutputStream out = new DataOutputStream(sock.getOutputStream());
-			out.writeChars(ack_type + "_ack " + data + "\n");
-			out.flush();
-			
+			byte[]  b = (ack_type + "_ack " + data + "\n").getBytes(Charset.forName("UTF-8"));
+			sock.getOutputStream().write(b);			
 		} catch (IOException e) {
 			System.err.println("Client " + name + " failed to receive a message");
 		}
+	}
+	
+	public void close() throws IOException {
+		sock.close();
 	}
 
 	@Override

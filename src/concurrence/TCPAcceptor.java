@@ -6,6 +6,13 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * This is the class running the main server process
+ * A.k.a. the welcoming thread
+ * @version 0.19999b alpha unstable build 0xFFF56
+ * @author ars3nic
+ *
+ */
 public class TCPAcceptor implements Runnable {
 
 	private static TCPAcceptor instance = null;
