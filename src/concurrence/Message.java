@@ -5,7 +5,13 @@ import java.io.IOException;
 import lsr.concurrence.provided.server.CommandID;
 import lsr.concurrence.provided.server.InputReader;
 
+/**
+ * Holder class to have all the messages attributes in one place
+ * @author ars3nic
+ *
+ */
 public class Message {
+	
 	private Client from;
 	private CommandID cmdid;
 	private String topic;
@@ -18,6 +24,14 @@ public class Message {
 		this.message = message;
 	}
 	
+	/**
+	 * Reads a message from the given client using the given reader 
+	 * @param reader
+	 * @param client
+	 * @return
+	 * 	the next unread message from the client's socket
+	 * @throws IOException
+	 */
 	public static Message fromReader(InputReader reader, Client client) throws IOException {
 		return new Message(reader.getCommandId(), client, reader.getTopic(), reader.getMessage());
 	}

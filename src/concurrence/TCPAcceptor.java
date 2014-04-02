@@ -21,12 +21,21 @@ public class TCPAcceptor implements Runnable {
 	
 	public static final int MAX_NB_THREAD = 12;
 	
+	/**
+	 * The Socket used to listen for incoming client connections
+	 */
 	private ServerSocket socket;
 	
 	private ExecutorService tPool;
 	
+	/**
+	 * The CommandHandler threads
+	 */
 	private Thread[] handlers = new Thread[MAX_NB_THREAD];
 	
+	/**
+	 * Shared buffer for message passing between TCPReaders and CommandHandler
+	 */
 	private MessageBuffer buffer = new MessageBuffer();
 	
 	private TCPAcceptor() {

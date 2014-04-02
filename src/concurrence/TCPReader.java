@@ -7,7 +7,7 @@ import lsr.concurrence.provided.server.InputFormatException;
 import lsr.concurrence.provided.server.InputReader;
 
 /**
- * Runnable that handles the communication with one client
+ * Runnable that handles receiving messages from one client
  * 
  * @author ars3nic
  * @version 1.0
@@ -17,8 +17,14 @@ public class TCPReader implements Runnable {
 
 	private InputReader reader;
 
+	/**
+	 * The Client instance this reader receives messages from
+	 */
 	private Client client;
 
+	/**
+	 * Reference to the shared message buffers
+	 */
 	private MessageBuffer buffer;
 
 	/**

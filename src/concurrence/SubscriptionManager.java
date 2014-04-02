@@ -16,14 +16,20 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class SubscriptionManager {
 
+	/**
+	 * Subscriber list for each subject. Using sets to avoid adding the same client multiple times in the same subject.
+	 */
 	private Hashtable <String, Set<Client>> data = new Hashtable<>();
 
+	/**
+	 * The locks used to prevent two CommandHandler from publishing in the same topic at the same time
+	 */
 	private Hashtable<String, ReentrantLock> locks = new Hashtable<>();
 
 	/**
 	 * Adds a new subscriber to the given topic. 
 	 * If the topic does not exist it is created.
-	 * Thread-safe.
+	 * This method is thread-safe.
 	 * @param topic
 	 * @param c
 	 */
@@ -42,8 +48,10 @@ public class SubscriptionManager {
 	}
 
 	/**
-	 * Removes the given client from every subject
+	 * Removes the given client from every subject.
+	 * This method is thread-safe
 	 * @param c
+	 * 	The client we want to remove from every subscriber list
 	 */
 	public void removeFromAll(Client c) {
 		System.err.println(getClass().getName() + ": Disconnecting " + c.getName());
@@ -55,9 +63,12 @@ public class SubscriptionManager {
 	}
 
 	/**
-	 * Removes a client from a subject's client 
+	 * Removes a client from a subject's client.
+	 * This method is thread-safe.
 	 * @param topic
+	 * 	The topic from which the client unsubscribes
 	 * @param c
+	 * 	The client wishing to unsubscribe
 	 */
 	public void removeSubscriber(String topic, Client c) {
 		System.err.println(getClass().getName() + ": Removing " + c.getName() + " from " + topic);
@@ -81,9 +92,12 @@ public class SubscriptionManager {
 	}
 
 	/**
-	 * Sends a message to every client that has subscribed to the given topic
+	 * Sends a message to every client that has subscribed to the given topic.
+	 * This method is thread-safe.
 	 * @param topic
+	 * 	The topic to publish the message to
 	 * @param message
+	 * 	The message content
 	 */
 	public void publish(String topic, String message) {
 		System.err.println(getClass().getName() + ": Publishing to " + topic);
