@@ -2,7 +2,6 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import lsr.concurrence.provided.server.CommandID;
 
 import org.junit.Before;
@@ -25,7 +24,7 @@ public class MessageBufferTest {
 	
 	private Message[] data = new Message[3];
 	
-	private Thread w = new Thread(new Runnable() {
+	private Thread writerThread = new Thread(new Runnable() {
 		
 		@Override
 		public void run() {
@@ -33,7 +32,7 @@ public class MessageBufferTest {
 		}
 	});
 	
-	private Thread r = new Thread(new Runnable() {
+	private Thread readerThread = new Thread(new Runnable() {
 		
 		@Override
 		public void run() {
@@ -62,6 +61,7 @@ public class MessageBufferTest {
 		
 		while(t.isAlive()) {
 			if(System.currentTimeMillis() > start + BLOCK_TIME) {
+				t.interrupt();
 				return;
 			}
 		}
@@ -90,39 +90,31 @@ public class MessageBufferTest {
 		}
 	}
 	
-	@Test
-	public void maximumSizePutTest() {
-		long start = System.currentTimeMillis();
+	@Test(timeout=1000)
+	public void maximumSizePutTest() throws InterruptedException {
 		for(int i = 0 ; i < MessageBuffer.BUF_SIZE ; i++) {
 			b.put(data[0]); //Filling up the buffer
 		}
-		Thread t = new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				b.put(null);
-			}
-		});
 		
-		t.start();
+		writerThread.start();
 		
-		while(t.isAlive()) {
-			if(start + BLOCK_TIME < System.currentTimeMillis()) {
-				t.interrupt();
-				return;
-			}
-		}
+		Thread.sleep(200);
 		
-		assertTrue(false);
+		readerThread.start();
+		
+		Thread.sleep(100);
+		assertFalse(writerThread.isAlive());
+		assertFalse(readerThread.isAlive());
+		assertEquals(MessageBuffer.BUF_SIZE, b.getCurrentSize());
 	}
 	
 	@Test(timeout=100)
 	public void oneReaderOneWriterTest() throws InterruptedException {
-		r.start();
+		readerThread.start();
 		Thread.sleep(20);
 		b.put(null);
-		Thread.yield();
-		assertFalse(r.isAlive());
+		Thread.sleep(20);
+		assertFalse(readerThread.isAlive());
 	}
 	
 	@Test
