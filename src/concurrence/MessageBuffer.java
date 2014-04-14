@@ -60,4 +60,8 @@ public class MessageBuffer {
 		}
 		return null;
 	}
+	
+	public int getCurrentSize() {
+		return counter;
+	}
 }
