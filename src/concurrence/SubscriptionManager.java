@@ -26,6 +26,12 @@ public class SubscriptionManager {
 	 */
 	private Hashtable<String, ReentrantLock> locks = new Hashtable<>();
 
+	
+	public int getSubscriberCount(String topic) {
+		Set<Client> c = data.get(topic);
+		return (c == null) ? 0 : c.size();
+	}
+	
 	/**
 	 * Adds a new subscriber to the given topic. 
 	 * If the topic does not exist it is created.
