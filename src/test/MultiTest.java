@@ -25,7 +25,7 @@ public class MultiTest {
 
 	public static void main(String[] args) {
 		MultiTest t = new MultiTest();
-//		t.setUp();
+		t.setUp();
 		t.setUpClient();
 		t.join();
 	}
@@ -117,7 +117,7 @@ public class MultiTest {
 						break;
 
 					default:
-						System.out.println("Oups the test failed: " + n);
+						throw new AssertionError("The random number generator generated an invalid number!!");
 						//This never happens
 					}
 					out.flush();
