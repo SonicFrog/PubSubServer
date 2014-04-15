@@ -1,6 +1,7 @@
 package concurrence;
 
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.locks.ReentrantLock;
@@ -17,14 +18,19 @@ import java.util.concurrent.locks.ReentrantLock;
 public class SubscriptionManager {
 
 	/**
+	 * Global used for mutual exclusion on the hashmaps
+	 */
+	private ReentrantLock global = new ReentrantLock();
+	
+	/**
 	 * Subscriber list for each subject. Using sets to avoid adding the same client multiple times in the same subject.
 	 */
-	private Hashtable <String, Set<Client>> data = new Hashtable<>();
+	private Map <String, Set<Client>> data = new HashMap<>();
 
 	/**
 	 * The locks used to prevent two CommandHandler from publishing in the same topic at the same time
 	 */
-	private Hashtable<String, ReentrantLock> locks = new Hashtable<>();
+	private Map<String, ReentrantLock> locks = new HashMap<>();
 
 	
 	public int getSubscriberCount(String topic) {
@@ -42,8 +48,10 @@ public class SubscriptionManager {
 	public void addSubscriber(String topic, Client c) {
 		System.err.println(getClass().getName() + ": Adding " + c.getName() + " to " + topic);
 		if(!data.containsKey(topic)) {
+			global.lock();
 			locks.put(topic, new ReentrantLock());
 			data.put(topic, new TreeSet<Client>());		
+			global.unlock();
 		}
 
 		locks.get(topic).lock();
@@ -88,8 +96,10 @@ public class SubscriptionManager {
 				c.sendACK("unsubscribe", topic);
 			}
 			if(subs.size() == 0) {
+				global.lock();
 				data.remove(topic);
 				locks.remove(topic);
+				global.unlock();
 			}
 			else {
 				topicLock.unlock();
