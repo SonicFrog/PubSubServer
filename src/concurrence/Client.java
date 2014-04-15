@@ -72,4 +72,8 @@ public class Client implements Comparable<Client> {
 			return 0;
 		return -1;
 	}
+	
+	public boolean isConnected() {
+		return sock.isConnected();
+	}
 }
