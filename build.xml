@@ -7,6 +7,7 @@
   <path id="default.classpath">
     <pathelement path="${build}" />
     <pathelement location="${library-path}/provided.jar" />
+    <pathelement location="${library-path}/junit.jar" />
   </path>
 
   <target name="clean">
@@ -16,7 +17,9 @@
 
   <target name="compile" description="Builds everything in the project">
     <mkdir dir="${build}" />
-    <javac srcdir="${sources}" destdir="${build}" debug="on" debuglevel="lines,vars,source" includeantruntime="false" classpath="${library-path}/provided.jar">
+    <javac srcdir="${sources}" destdir="${build}" debug="on"
+           debuglevel="lines,vars,source" includeantruntime="false">
+      <classpath refid="default.classpath" />
     </javac>
   </target>
 
