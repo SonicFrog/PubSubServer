@@ -43,9 +43,15 @@ public class TCPReader implements Runnable {
 	public void run() {
 		System.err.println(getClass().getName() + ": "+ client.getName() + " started by ThreadPool");
 		
-		client.sendACK("connection" , client.getName());
+		try {
+			client.sendACK("connection" , client.getName());
+		} catch (IOException e) {
+			System.err.println(getClass().getName() + ": " + client.getName() + " failed to receive ACK");
+			if(!client.isConnected())
+				return;
+		}
 		
-		while(true) {
+		while(client.isConnected()) {
 			try {
 				reader.readCommand();
 				Message m = Message.fromReader(reader, client);
