@@ -51,9 +51,6 @@ public class CommandHandler implements Runnable {
 
 					for(Client c : dest) {
 						c.sendMessage(m.getTopic(), m.getMessage());
-						System.err.println(getClass().getName() + ": " + m.getClient().getName() + " failed to receive a message");
-						subs.removeFromAll(c);
-
 					}
 					subs.endPublish(m.getTopic());
 
