@@ -1,5 +1,6 @@
 package concurrence;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -18,7 +19,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class SubscriptionManager {
 
 	/**
-	 * Global used for mutual exclusion on the hashmaps
+	 * Global used for mutual exclusion on the while editing the hashmaps
 	 */
 	private ReentrantLock global = new ReentrantLock();
 	
@@ -93,7 +94,12 @@ public class SubscriptionManager {
 			topicLock.lock();
 			Set<Client> subs = data.get(topic);
 			if(subs.remove(c)) {
-				c.sendACK("unsubscribe", topic);
+				try {
+					c.sendACK("unsubscribe", topic);
+				} catch (IOException e) {
+					System.err.println(getClass().getName() + ": " + c.getName() + " failed to receive a message");
+					removeFromAll(c);
+				}
 			}
 			if(subs.size() == 0) {
 				global.lock();
@@ -120,7 +126,12 @@ public class SubscriptionManager {
 		if(data.containsKey(topic)) {
 			locks.get(topic).lock();
 			for(Client c : data.get(topic)) {
-				c.sendMessage(topic, message);
+				try {
+					c.sendMessage(topic, message);
+				} catch (IOException e) {
+					System.err.println(getClass().getName() + ": " + c.getName() + " failed to receive a message");
+					removeFromAll(c);
+				}
 			}
 			locks.get(topic).unlock();
 		}

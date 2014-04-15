@@ -36,17 +36,13 @@ public class Client implements Comparable<Client> {
 	 * @param message
 	 * 	The message's content
 	 */
-	public synchronized void sendMessage(String topic, String message) {
-		try {
-			System.err.println(getClass().getName() + ": Sending message to " + getName() );
-			byte[] b = (topic + " " + message + "\n" ).getBytes(Charset.forName("UTF-8"));
-			sock.getOutputStream().write(b);
-		} catch (IOException e) {
-			System.err.println("Client " + name + " failed to receive a message");
-		}
+	public synchronized void sendMessage(String topic, String message) throws IOException {
+		System.err.println(getClass().getName() + ": Sending message to " + getName() );
+		byte[] b = (topic + " " + message + "\n" ).getBytes(Charset.forName("UTF-8"));
+		sock.getOutputStream().write(b);
 	}
 
-	
+
 	/**
 	 * Sends an ack to this client
 	 * This is thread-safe
@@ -56,16 +52,12 @@ public class Client implements Comparable<Client> {
 	 * 	The additionnal information about the ack (for (un)subscribe this is the subject,
 	 * and for connection this is the local client name)
 	 */
-	public synchronized void sendACK(String ack_type, String data) {
-		try {
-			System.err.println(getClass().getName() + ": Sending ACK to " + getName() );
-			byte[]  b = (ack_type + "_ack " + data + "\n").getBytes(Charset.forName("UTF-8"));
-			sock.getOutputStream().write(b);			
-		} catch (IOException e) {
-			System.err.println("Client " + name + " failed to receive a message");
-		}
+	public synchronized void sendACK(String ack_type, String data) throws IOException {
+		System.err.println(getClass().getName() + ": Sending ACK to " + getName() );
+		byte[]  b = (ack_type + "_ack " + data + "\n").getBytes(Charset.forName("UTF-8"));
+		sock.getOutputStream().write(b);			
 	}
-	
+
 	/**
 	 * Closes this client's socket
 	 * @throws IOException
