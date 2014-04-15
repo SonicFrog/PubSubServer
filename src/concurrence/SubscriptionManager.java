@@ -1,7 +1,7 @@
 package concurrence;
 
-import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -21,19 +21,23 @@ public class SubscriptionManager {
 	/**
 	 * Global used for mutual exclusion on the while editing the hashmaps
 	 */
-	private ReentrantLock global = new ReentrantLock();
+	private ReentrantLock mapModification = new ReentrantLock();
 	
 	/**
 	 * Subscriber list for each subject. Using sets to avoid adding the same client multiple times in the same subject.
 	 */
-	private Map <String, Set<Client>> data = new HashMap<>();
+	private Map<String, Set<Client>> data = new HashMap<>();
 
 	/**
 	 * The locks used to prevent two CommandHandler from publishing in the same topic at the same time
 	 */
 	private Map<String, ReentrantLock> locks = new HashMap<>();
 
-	
+	/**
+	 * Counts the number of subscriber for the given topic
+	 * @param topic
+	 * @return
+	 */
 	public int getSubscriberCount(String topic) {
 		Set<Client> c = data.get(topic);
 		return (c == null) ? 0 : c.size();
@@ -45,21 +49,24 @@ public class SubscriptionManager {
 	 * This method is thread-safe.
 	 * @param topic
 	 * @param c
+	 * @return
+	 * 	A boolean indicating if the client was added to the topic
 	 */
-	public void addSubscriber(String topic, Client c) {
+	public boolean addSubscriber(String topic, Client c) {
+		boolean result = false;
 		System.err.println(getClass().getName() + ": Adding " + c.getName() + " to " + topic);
 		if(!data.containsKey(topic)) {
-			global.lock();
+			mapModification.lock();
 			locks.put(topic, new ReentrantLock());
 			data.put(topic, new TreeSet<Client>());		
-			global.unlock();
+			mapModification.unlock();
 		}
 
 		locks.get(topic).lock();
-		if(data.get(topic).add(c)) {
-			c.sendACK("subscribe", topic);
-		}
+		result = data.get(topic).add(c);
 		locks.get(topic).unlock();
+		
+		return result;
 	}
 
 	/**
@@ -70,11 +77,28 @@ public class SubscriptionManager {
 	 */
 	public void removeFromAll(Client c) {
 		System.err.println(getClass().getName() + ": Disconnecting " + c.getName());
-		for(String topic : locks.keySet()) {
+		Iterator<String> it = data.keySet().iterator();
+		String topic;
+		mapModification.lock();
+		while(it.hasNext()) {
+			topic = it.next();
 			locks.get(topic).lock();
 			data.get(topic).remove(c);
 			locks.get(topic).unlock();
 		}
+		mapModification.unlock();
+	}
+	
+	public void cleanup() {
+		Iterator<Set<Client>> it = data.values().iterator();
+		
+		mapModification.lock();
+		while(it.hasNext()) {
+			if(it.next().size() == 0) {
+				it.remove();
+			}
+		}
+		mapModification.unlock();		
 	}
 
 	/**
@@ -84,8 +108,11 @@ public class SubscriptionManager {
 	 * 	The topic from which the client unsubscribes
 	 * @param c
 	 * 	The client wishing to unsubscribe
+	 * @return 
+	 * 	Whether the client was removed from the given topic
 	 */
-	public void removeSubscriber(String topic, Client c) {
+	public boolean removeSubscriber(String topic, Client c) {
+		boolean result = false;
 		System.err.println(getClass().getName() + ": Removing " + c.getName() + " from " + topic);
 		ReentrantLock topicLock = null;
 
@@ -93,47 +120,39 @@ public class SubscriptionManager {
 			topicLock = locks.get(topic);
 			topicLock.lock();
 			Set<Client> subs = data.get(topic);
-			if(subs.remove(c)) {
-				try {
-					c.sendACK("unsubscribe", topic);
-				} catch (IOException e) {
-					System.err.println(getClass().getName() + ": " + c.getName() + " failed to receive a message");
-					removeFromAll(c);
-				}
-			}
-			if(subs.size() == 0) {
-				global.lock();
-				data.remove(topic);
-				locks.remove(topic);
-				global.unlock();
-			}
-			else {
-				topicLock.unlock();
-			}
+			result = subs.remove(c);
+			topicLock.unlock();
+			cleanup();
 		}
+		
+		return result;
 	}
 
 	/**
-	 * Sends a message to every client that has subscribed to the given topic.
+	 * Locks a topic for publishing
 	 * This method is thread-safe.
 	 * @param topic
 	 * 	The topic to publish the message to
 	 * @param message
 	 * 	The message content
+	 * @return
+	 * 	The list of the subscriber for this topic or
+	 * null if there was no subscriber
 	 */
-	public void publish(String topic, String message) {
+	public Set<Client> startPublish(String topic) {
 		System.err.println(getClass().getName() + ": Publishing to " + topic);
 		if(data.containsKey(topic)) {
 			locks.get(topic).lock();
-			for(Client c : data.get(topic)) {
-				try {
-					c.sendMessage(topic, message);
-				} catch (IOException e) {
-					System.err.println(getClass().getName() + ": " + c.getName() + " failed to receive a message");
-					removeFromAll(c);
-				}
-			}
-			locks.get(topic).unlock();
+			return data.get(topic);		
 		}
+		return null;
+	}
+	
+	/**
+	 * Releases a topic
+	 * @param topic
+	 */
+	public void endPublish(String topic) {
+		locks.get(topic).unlock();
 	}
 }
