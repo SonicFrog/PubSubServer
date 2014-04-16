@@ -29,7 +29,6 @@ public class SubscriptionManagerTest {
 			int p = 0;
 			int c = CLIENT_COUNT;
 			CLIENT_COUNT = CLIENT_COUNT + 1;
-			System.err.println(c);
 			for(int i = 0 ; i < ITER_COUNT ; i++) {
 				mgr.addSubscriber(topics[p], clients[c]);
 				subCount[c]++;
