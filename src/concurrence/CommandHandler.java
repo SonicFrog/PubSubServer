@@ -12,7 +12,7 @@ public class CommandHandler implements Runnable {
 	private static SubscriptionManager subs = new SubscriptionManager();
 
 	public CommandHandler (MessageBuffer buffer) {
-		System.err.println(getClass().getName() + ": Created!");
+		Logger.getLogger().print(getClass().getName() + ": Created!");
 		this.buffer = buffer;
 	}
 
@@ -20,7 +20,7 @@ public class CommandHandler implements Runnable {
 		while(true) {
 			Message m = buffer.get();
 
-			System.err.println(getClass().getName() + "[" + Thread.currentThread().getId() + "]: Handling message from " + m.getClient().getName()); 
+			Logger.getLogger().print(getClass().getName() + "[" + Thread.currentThread().getId() + "]: Handling message from " + m.getClient().getName()); 
 
 			try {
 				switch (m.getCmdid()) {
@@ -55,21 +55,21 @@ public class CommandHandler implements Runnable {
 					break;				
 
 				default:
-					System.err.println(getClass().getName() + ": Fatal error reading message(" + m.getCmdid() +") from " + m.getClient().getName());
+					Logger.getLogger().print(getClass().getName() + ": Fatal error reading message(" + m.getCmdid() +") from " + m.getClient().getName());
 				}
 			} catch (IOException e) {
-				System.err.println(getClass().getName() + ": Error sending/recving with " + m.getClient().getName());
+				Logger.getLogger().print(getClass().getName() + ": Error sending/recving with " + m.getClient().getName());
 				subs.removeFromAll(m.getClient());
 				try {
 					m.getClient().close();
 				} catch (IOException e1) {
-					System.err.println(getClass().getName() + ": Additionnal error while closing socket!");
+					Logger.getLogger().print(getClass().getName() + ": Additionnal error while closing socket!");
 				}
 			} catch (ConcurrentModificationException e) {
 				e.printStackTrace();
 			}
 
-			System.err.println(getClass().getName() + "[" + Thread.currentThread().getId() + "]: Finished handling message from " + m.getClient().getName());
+			Logger.getLogger().print(getClass().getName() + "[" + Thread.currentThread().getId() + "]: Finished handling message from " + m.getClient().getName());
 		}
 	}
 }

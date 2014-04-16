@@ -54,7 +54,7 @@ public class SubscriptionManager {
 	 */
 	public boolean addSubscriber(String topic, Client c) {
 		boolean result = false;
-		System.err.println(getClass().getName() + ": Adding " + c.getName() + " to " + topic);
+		Logger.getLogger().print(getClass().getName() + ": Adding " + c.getName() + " to " + topic);
 		if(!data.containsKey(topic)) {
 			mapModification.lock();
 			locks.put(topic, new ReentrantLock());
@@ -76,7 +76,7 @@ public class SubscriptionManager {
 	 * 	The client we want to remove from every subscriber list
 	 */
 	public void removeFromAll(Client c) {
-		System.err.println(getClass().getName() + ": Disconnecting " + c.getName());
+		Logger.getLogger().print(getClass().getName() + ": Disconnecting " + c.getName());
 		Iterator<String> it = data.keySet().iterator();
 		String topic;
 		mapModification.lock();
@@ -113,7 +113,7 @@ public class SubscriptionManager {
 	 */
 	public boolean removeSubscriber(String topic, Client c) {
 		boolean result = false;
-		System.err.println(getClass().getName() + ": Removing " + c.getName() + " from " + topic);
+		Logger.getLogger().print(getClass().getName() + ": Removing " + c.getName() + " from " + topic);
 		ReentrantLock topicLock = null;
 
 		if(data.containsKey(topic)) {
@@ -129,7 +129,8 @@ public class SubscriptionManager {
 	}
 
 	/**
-	 * Locks a topic for publishing
+	 * Locks a topic for publishing, if the subscriber list for the given topic was empty
+	 * no lock is acquired
 	 * This method is thread-safe.
 	 * @param topic
 	 * 	The topic to publish the message to
@@ -140,7 +141,7 @@ public class SubscriptionManager {
 	 * null if there was no subscriber
 	 */
 	public Set<Client> startPublish(String topic) {
-		System.err.println(getClass().getName() + ": Publishing to " + topic);
+		Logger.getLogger().print(getClass().getName() + ": Publishing to " + topic);
 		if(data.containsKey(topic)) {
 			locks.get(topic).lock();
 			return data.get(topic);		
@@ -153,6 +154,10 @@ public class SubscriptionManager {
 	 * @param topic
 	 */
 	public void endPublish(String topic) {
-		locks.get(topic).unlock();
+		if(locks.get(topic).isHeldByCurrentThread()) {
+			locks.get(topic).unlock();
+		} else {
+			Logger.getLogger().print(getClass().getName() + ": Publishing to " + topic);
+		}
 	}
 }
