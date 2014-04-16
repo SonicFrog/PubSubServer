@@ -56,12 +56,12 @@ public class SubscriptionManager {
 	public boolean addSubscriber(String topic, Client c) {
 		boolean result = false;
 		Logger.getLogger().print(getClass().getName() + ": Adding " + c.getName() + " to " + topic);
+		mapModification.lock();
 		if(!data.containsKey(topic)) {
-			mapModification.lock();
 			locks.put(topic, new ReentrantLock());
 			data.put(topic, new TreeSet<Client>());		
-			mapModification.unlock();
 		}
+		mapModification.unlock();
 
 		locks.get(topic).lock();
 		result = data.get(topic).add(c);
@@ -88,6 +88,7 @@ public class SubscriptionManager {
 			locks.get(topic).unlock();
 		}
 		mapModification.unlock();
+		cleanup();
 	}
 	
 	public void cleanup() {
@@ -114,17 +115,23 @@ public class SubscriptionManager {
 	 */
 	public boolean removeSubscriber(String topic, Client c) {
 		boolean result = false;
+		Set<Client> subs = null;
 		Logger.getLogger().print(getClass().getName() + ": Removing " + c.getName() + " from " + topic);
 		ReentrantLock topicLock = null;
 
+		mapModification.lock();
 		if(data.containsKey(topic)) {
 			topicLock = locks.get(topic);
 			topicLock.lock();
-			Set<Client> subs = data.get(topic);
-			result = subs.remove(c);
-			topicLock.unlock();
-			cleanup();
+			subs = data.get(topic);
 		}
+		mapModification.unlock();
+			
+		if(subs != null)
+			result = subs.remove(c);
+		if(topicLock != null)
+			topicLock.unlock();
+		cleanup();
 		
 		return result;
 	}
@@ -141,11 +148,13 @@ public class SubscriptionManager {
 	 */
 	public Set<Client> startPublish(String topic) {
 		Logger.getLogger().print(getClass().getName() + ": Publishing to " + topic);
+		
+		mapModification.lock();
 		if(data.containsKey(topic)) {
 			locks.get(topic).lock();
-			return data.get(topic);		
 		}
-		return null;
+		mapModification.unlock();
+		return data.get(topic);
 	}
 	
 	/**
