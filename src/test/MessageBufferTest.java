@@ -2,6 +2,7 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+
 import lsr.concurrence.provided.server.CommandID;
 
 import org.junit.Before;
@@ -49,23 +50,23 @@ public class MessageBufferTest {
 	
 	@Test
 	public void blockingWhenEmptyTest() {
-		long start = System.currentTimeMillis();
-		
-		Thread t = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				b.get();		
+			long start = System.currentTimeMillis();
+			
+			Thread t = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					b.get();		
+				}
+			});
+			t.start();
+			
+			while(t.isAlive()) {
+				if(System.currentTimeMillis() > start + BLOCK_TIME) {
+					t.interrupt();
+					return;
+				}
 			}
-		});
-		t.start();
-		
-		while(t.isAlive()) {
-			if(System.currentTimeMillis() > start + BLOCK_TIME) {
-				t.interrupt();
-				return;
-			}
-		}
-		assertEquals("The thread terminated by itself!!", true, false);
+			assertEquals("The thread terminated by itself!!", true, false);
 	}
 	
 	@Test

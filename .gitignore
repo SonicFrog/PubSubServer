@@ -8,3 +8,4 @@ javadoc/
 *.jar
 *.war
 *.ear
+/bin

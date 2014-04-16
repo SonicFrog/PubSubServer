@@ -45,11 +45,11 @@ Ce fichier fait tourner notre serveur à l’infini avec 15 demandes de clients 
 
 - - - - - - - - - - - - - - - - - - - - -
 
-/!\ Pour ces autres tests, il faut que votre configuration d’ant inclue la bibliothèque ant-junit.jar /!\
+/!\ Pour ces autres tests, il faut que votre configuration d’ant inclue la bibliothèque ant-junit4.jar (dans ANT_HOME) /!\
 
 - - - - - - - - - - - - - - - - - - - - -
 
-CommandHandlerTest:
+CommandHandlerTest (JUnit) :
 
 Teste notre CommandHandler;
 	insertRemoveTest: On testes si notre CommandHandler se comporte bien s’il y a un message à traiter dans le tampon et s’il y en a aucun.
@@ -57,7 +57,7 @@ Teste notre CommandHandler;
 
 - - - - - - - - - - - - - - - - - - - - -
 
-MessageHandlerTest:
+MessageHandlerTest (JUnit) :
 
 Teste notre MessageHandler:
 	blockingWhenEmptyTest: on vérifie que si le tampon est vide le thread bloque pour attendre un message.
@@ -68,7 +68,7 @@ Teste notre MessageHandler:
 
 - - - - - - - - - - - - - - - - - - - - -
 
-SubscriptionManagerTest:
+SubscriptionManagerTest (JUnit) :
 
 Teste notre SubscriptionManager:
 	subscribeThenRemoveAllTest: on inscrit un client à tout les sujet puis on imite une fin de client pour voir si notre fonction removeFromAll(client) fonctionne comme désiré.
