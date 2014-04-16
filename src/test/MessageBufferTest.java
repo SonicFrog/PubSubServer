@@ -18,7 +18,7 @@ import concurrence.MessageBuffer;
  */
 public class MessageBufferTest {
 
-	public static final int BLOCK_TIME = 10000;
+	public static final int BLOCK_TIME = 5000;
 	
 	private MessageBuffer b = new MessageBuffer();
 	
