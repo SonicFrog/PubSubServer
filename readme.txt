@@ -3,7 +3,7 @@ Projet de Ogier Bouvier 212480 & Tristan Overney 217280
 ========================================
 Serveur Pub/Sub
 ========================================
-/!\ Logger.java: dans notre main (ligne 9), vous avez la possibilité d’activer le « mode debug », c’est à dire d’activer les logs de notre serveur sur stderr, ce grâce à Logger.getLogger().setDebug(…) en choisissant TRUE ou FALSE /!\
+/!\ Logger.java: dans notre main (ligne 9), vous avez la possibilité de desactiver/activer le « mode debug », c’est à dire d’activer les logs de notre serveur sur stderr, ce grâce à Logger.getLogger().setDebug(…) en choisissant TRUE ou FALSE /!\
 
 ========================================
 
@@ -74,7 +74,7 @@ Teste notre SubscriptionManager:
 	subscribeThenRemoveAllTest: on inscrit un client à tout les sujet puis on imite une fin de client pour voir si notre fonction removeFromAll(client) fonctionne comme désiré.
 	duSubscribeTest: on vérifie qu’inscrire des clients à des sujets fonctionne correctement.
 	unsubscribeTest: on vérifie que désinscrire plusieurs fois un client de sujets qui n’existent pas ne fait rien.
-	concurrentSubUnsubTest:
+	concurrentSubUnsubTest: lance deux thread en parallèle qui abonne et désabonne des clients au sujet 0 (epfl). Nous vérifions si le nombres d’abonnés à epfl est égal à la somme des abonnés de chaque thread.
 	
 
 
