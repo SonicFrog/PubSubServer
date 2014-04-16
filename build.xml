@@ -8,6 +8,8 @@
     <pathelement path="${build}" />
     <pathelement location="${library-path}/provided.jar" />
     <pathelement location="${library-path}/junit.jar" />
+    <pathelement location="${library-path}/ant-junit4.jar" />
+    <pathelement location="${library-path}/hamcrest.jar" />
   </path>
 
   <target name="clean">
@@ -31,19 +33,24 @@
     </java>
   </target>
 
-  <target name="tests" description="Starts the tests" depends="compile">
-    <!-- Replace with your main class for the tests -->
-    <java classname="test.TestPubSubProvided" fork="false">
+  <target name="tests" description="Starts the tests"
+          depends="compile">
+    <junit printsummary="yes" fork="true">
       <classpath refid="default.classpath" />
-      <arg line="localhost 7676" />
-    </java>
+      <formatter type="plain" usefile="false" />
+      <test name="test.MessageBufferTest" />
+      <test name="test.CommandHandlerTest" />
+      <test name ="test.SubscriptionManagerTest" />
+    </junit>
   </target>
 
-
   <target name="javadoc" description="Create Javadocs">
+
     <delete dir="${javadoc}"/>
     <mkdir dir="${javadoc}"/>
-    <javadoc destdir="${javadoc}" sourcepath="${sources}" />
+    <javadoc destdir="${javadoc}" sourcepath="${sources}">
+      <classpath refid="default.classpath" />
+    </javadoc>
   </target>
 
   <!-- This should produce what is required for submission, as of now. Check before submitting, YMMV otherwise. -->

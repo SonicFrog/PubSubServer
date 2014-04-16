@@ -21,17 +21,18 @@ public class MessageBuffer {
 	 * Blocking if there is no place into the queue
 	 * 
 	 * @param m
+	 * 	The message to be queued in this buffer
 	 */
 	public synchronized void put(Message m) {
 		try {
 			while (counter == BUF_SIZE) {
-				System.err.println(getClass().getName() + ": Buffer is full");
+				Logger.getLogger().print(getClass().getName() + ": Buffer is full");
 				wait();
 			}
 			buf[input] = m;
 			counter++;
 			input = (input + 1) % BUF_SIZE;
-			System.err.println(getClass().getName() + ": Added message to buffer");
+			Logger.getLogger().print(getClass().getName() + ": Added message to buffer");
 			notifyAll();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -42,17 +43,18 @@ public class MessageBuffer {
 	 * Gets a message from the queue
 	 * Blocks if there is no message to get
 	 * @return
+	 * 	The first message that was queued or null if the thread was interrupted
 	 */
 	public synchronized Message get() {
 		try {
 			while(counter == 0) {
-				System.err.println(getClass().getName() + ": No message to get in buffer! Waiting...");
+				Logger.getLogger().print(getClass().getName() + ": No message to get in buffer! Waiting...");
 				wait();
 			}
 			Message m = buf[output];
 			output = (output +  1) % BUF_SIZE;
 			counter--;
-			System.err.println(getClass().getName() + ": Got a message from buffer");
+			Logger.getLogger().print(getClass().getName() + ": Got a message from buffer");
 			notifyAll();
 			return m;
 		} catch (InterruptedException e) {
@@ -61,6 +63,11 @@ public class MessageBuffer {
 		return null;
 	}
 	
+	/**
+	 * Gets the current number of messages waiting in the buffer
+	 * @return
+	 * 	An integer representing the number of messages currently in the buffer
+	 */
 	public int getCurrentSize() {
 		return counter;
 	}

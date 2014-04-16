@@ -28,8 +28,15 @@ public class TCPReader implements Runnable {
 	private MessageBuffer buffer;
 
 	/**
-	 * Instantiates a new ClientHandler
-	 * @param in We need to have only the socket to communicate with the client
+	 * TCPReader constructor
+	 * 
+	 * @param number
+	 * 	The number of this client
+	 * @param sock
+	 * 	The socket for this client
+	 * @param buffer
+	 * 	The shared command buffer
+	 * @throws IOException
 	 */
 	public TCPReader(int number, Socket sock, MessageBuffer buffer) throws IOException {
 		reader = new InputReader(sock.getInputStream());

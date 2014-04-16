@@ -40,18 +40,18 @@ public class TCPAcceptor implements Runnable {
 	
 	private TCPAcceptor() {
 		try {
-			System.err.println(getClass().getName()  + ": Binding socket on localhost:" + PORT + "...");
+			Logger.getLogger().print(getClass().getName()  + ": Binding socket on localhost:" + PORT + "...");
 			socket = new ServerSocket(PORT);
 			
 			
-			System.err.println(getClass().getName() +": Instantiating command handlers...");
+			Logger.getLogger().print(getClass().getName() +": Instantiating command handlers...");
 			for(int i = 0 ; i < handlers.length ; i++) {
 				handlers[i] = new Thread(new CommandHandler(buffer));
 				handlers[i].start();
 			}
 			tPool = Executors.newFixedThreadPool(MAX_NB_THREAD);
 		} catch(IOException e) {
-			System.err.println(getClass().getName() + ": Unable to open socket on port " + PORT + ": " + e.getMessage());
+			Logger.getLogger().print(getClass().getName() + ": Unable to open socket on port " + PORT + ": " + e.getMessage());
 			System.exit(-1);
 		}
 	}
@@ -73,11 +73,11 @@ public class TCPAcceptor implements Runnable {
 		try {
 			while(true) {
 				client = socket.accept();
-				System.err.println(getClass().getName() + ": New client connected " + cid);
+				Logger.getLogger().print(getClass().getName() + ": New client connected " + cid);
 				tPool.execute(new TCPReader(cid++, client, buffer));
 			}			
 		} catch(IOException e) {
-			System.err.println(getClass().getName() + ": Error while client connecting: " +  e.getLocalizedMessage());
+			Logger.getLogger().print(getClass().getName() + ": Error while client connecting: " +  e.getLocalizedMessage());
 		}
 	}
 }
