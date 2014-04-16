@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
  * This is the class running the main server process
  * A.k.a. the welcoming thread
  * @version 0.19999b alpha unstable build 0xFFF56
- * @author ars3nic
+ * @author Ogier & Tristan
  *
  */
 public class TCPAcceptor implements Runnable {

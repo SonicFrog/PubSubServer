@@ -13,7 +13,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * 
  * @see Client
  * @version 6.66 (the number of the beast)
- * @author ars3nic
+ * @author Ogier & Tristan
  *
  */
 public class SubscriptionManager {

@@ -7,7 +7,8 @@ import lsr.concurrence.provided.server.InputReader;
 
 /**
  * Holder class to have all the messages attributes in one place
- * @author ars3nic
+ * @author Ogier & Tristan
+ * @version 42
  *
  */
 public class Message {

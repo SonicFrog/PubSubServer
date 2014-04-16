@@ -5,7 +5,8 @@ import java.io.PrintStream;
 /**
  * Debug printer class
  * 
- * @author ars3nic
+ * @author Ogier & Tristan
+ * @version e^(-i)
  *
  */
 public class Logger {

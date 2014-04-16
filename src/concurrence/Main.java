@@ -6,7 +6,7 @@ package concurrence;
 public class Main {
 
 	public static void main(String[] args) {
-		Logger.getLogger().setDebug(true);
+		Logger.getLogger().setDebug(true); // replace true by false if you want to get rid of all sterr logs we've implemented
 		TCPAcceptor server = TCPAcceptor.getServer();
 		Thread main = new Thread(server);
 		main.start();

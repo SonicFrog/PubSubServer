@@ -8,7 +8,8 @@ import java.util.Set;
 /**
  * Runnable instance that handles executing the command it gets from the shared buffer
  * 
- * @author ars3nic
+ * @author Ogier & Tristan
+ * @verison VI: Return of the Jedi
  *
  */
 public class CommandHandler implements Runnable {

@@ -7,7 +7,8 @@ import java.nio.charset.Charset;
 /**
  * Used to hold the client's socket along with its name to allow easy manipulation 
  * and message sending from the subscriptions
- * @author ars3nic
+ * @author Ogier & Tristan
+ * @version π
  * @see Comparable
  *
  */

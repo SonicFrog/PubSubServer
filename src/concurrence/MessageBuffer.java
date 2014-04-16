@@ -3,7 +3,8 @@ package concurrence;
 /**
  * Concurrent message buffer yay
  * 
- * @author ars3nic
+ * @author Ogier & Tristan
+ * @version 3 - 2i
  *
  */
 public class MessageBuffer {

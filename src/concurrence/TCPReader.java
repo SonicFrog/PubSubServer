@@ -9,7 +9,7 @@ import lsr.concurrence.provided.server.InputReader;
 /**
  * Runnable that handles receiving messages from one client
  * 
- * @author ars3nic
+ * @author Ogier & Tristan
  * @version 1.0
  *
  */
