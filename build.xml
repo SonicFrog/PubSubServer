@@ -9,6 +9,7 @@
     <pathelement location="${library-path}/provided.jar" />
     <pathelement location="${library-path}/junit.jar" />
     <pathelement location="${library-path}/ant-junit4.jar" />
+    <pathelement location="${library-path}/hamcrest.jar" />
   </path>
 
   <target name="clean">
