@@ -45,9 +45,12 @@
   </target>
 
   <target name="javadoc" description="Create Javadocs">
+
     <delete dir="${javadoc}"/>
     <mkdir dir="${javadoc}"/>
-    <javadoc destdir="${javadoc}" sourcepath="${sources}" />
+    <javadoc destdir="${javadoc}" sourcepath="${sources}">
+      <classpath refid="default.classpath" />
+    </javadoc>
   </target>
 
   <!-- This should produce what is required for submission, as of now. Check before submitting, YMMV otherwise. -->
