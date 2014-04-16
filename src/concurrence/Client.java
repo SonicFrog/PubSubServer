@@ -16,6 +16,14 @@ public class Client implements Comparable<Client> {
 	private String name;
 	private Socket sock;
 
+	/**
+	 * Default Constructor for client
+	 * 
+	 * @param sock
+	 * 	The socket used to communicate with this client
+	 * @param name
+	 * 	The name of this client
+	 */
 	public Client(Socket sock, String name) {
 		this.sock = sock;
 		this.name = name;
@@ -24,6 +32,7 @@ public class Client implements Comparable<Client> {
 	/**
 	 * Gets the name given by the server to this client useful for debug purposes
 	 * @return
+	 * 	A string containing the name of this client
 	 */
 	public String getName() {
 		return name;
@@ -74,6 +83,11 @@ public class Client implements Comparable<Client> {
 		return -1;
 	}
 	
+	/**
+	 * Gets the status of the connection for this client
+	 * @return
+	 * 	true if this client's socket is connected false otherwise
+	 */
 	public boolean isConnected() {
 		return sock.isConnected();
 	}

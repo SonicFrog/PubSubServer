@@ -37,6 +37,7 @@ public class SubscriptionManager {
 	 * Counts the number of subscriber for the given topic
 	 * @param topic
 	 * @return
+	 * 	The number of subscriber for a given topic
 	 */
 	public int getSubscriberCount(String topic) {
 		Set<Client> c = data.get(topic);
@@ -134,8 +135,6 @@ public class SubscriptionManager {
 	 * This method is thread-safe.
 	 * @param topic
 	 * 	The topic to publish the message to
-	 * @param message
-	 * 	The message content
 	 * @return
 	 * 	The list of the subscriber for this topic or
 	 * null if there was no subscriber

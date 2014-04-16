@@ -21,6 +21,7 @@ public class MessageBuffer {
 	 * Blocking if there is no place into the queue
 	 * 
 	 * @param m
+	 * 	The message to be queued in this buffer
 	 */
 	public synchronized void put(Message m) {
 		try {
@@ -42,6 +43,7 @@ public class MessageBuffer {
 	 * Gets a message from the queue
 	 * Blocks if there is no message to get
 	 * @return
+	 * 	The first message that was queued or null if the thread was interrupted
 	 */
 	public synchronized Message get() {
 		try {
@@ -61,6 +63,11 @@ public class MessageBuffer {
 		return null;
 	}
 	
+	/**
+	 * Gets the current number of messages waiting in the buffer
+	 * @return
+	 * 	An integer representing the number of messages currently in the buffer
+	 */
 	public int getCurrentSize() {
 		return counter;
 	}

@@ -5,12 +5,23 @@ import java.util.ConcurrentModificationException;
 import java.util.Set;
 
 
+/**
+ * Runnable instance that handles executing the command it gets from the shared buffer
+ * 
+ * @author ars3nic
+ *
+ */
 public class CommandHandler implements Runnable {
 
 	private MessageBuffer buffer;
 
 	private static SubscriptionManager subs = new SubscriptionManager();
 
+	/**
+	 * CommandHandler constructor
+	 * @param buffer
+	 * 	A reference to the shared buffer to get the command from
+	 */
 	public CommandHandler (MessageBuffer buffer) {
 		Logger.getLogger().print(getClass().getName() + ": Created!");
 		this.buffer = buffer;
