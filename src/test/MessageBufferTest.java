@@ -116,9 +116,4 @@ public class MessageBufferTest {
 		Thread.sleep(20);
 		assertFalse(readerThread.isAlive());
 	}
-	
-	@Test
-	public void concurrentAccess() {
-		//TODO
-	}
 }
