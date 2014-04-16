@@ -40,6 +40,7 @@ public class Client implements Comparable<Client> {
 		System.err.println(getClass().getName() + ": Sending message to " + getName() );
 		byte[] b = (topic + " " + message + "\n" ).getBytes(Charset.forName("UTF-8"));
 		sock.getOutputStream().write(b);
+		sock.getOutputStream().flush();
 	}
 
 
