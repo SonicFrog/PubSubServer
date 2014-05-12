@@ -40,7 +40,7 @@
       <formatter type="plain" usefile="false" />
       <test name="test.MessageBufferTest" />
       <test name="test.CommandHandlerTest" />
-      <test name ="test.SubscriptionManagerTest" />
+      <test name="test.SubscriptionManagerTest" />
     </junit>
   </target>
 
